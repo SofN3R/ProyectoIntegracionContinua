@@ -1,0 +1,17 @@
+version: "3.9"
+services:
+  inventory-service:
+    build: ./inventoryservice
+    container_name: inventory-service
+    ports:
+      - "8081:8081"
+  billing-service:
+    build: ./billingservice
+    container_name: billing-service
+    ports:
+      - "8082:8082"
+    depends_on:
+      - inventory-service
+    environment:
+      # aquí ya no es localhost, es el nombre del servicio
+      - INVENTORY_URL=http://inventory-service:8081
