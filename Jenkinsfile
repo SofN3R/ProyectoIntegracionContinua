@@ -33,6 +33,8 @@ pipeline {
     stage('Docker Build (local)') {
       steps {
         bat """
+          dir inventoryservice\\build\\libs
+          dir billingservice\\build\\libs
           docker build -t inventory-service:%IMAGE_TAG% ./inventoryservice
           docker build -t billing-service:%IMAGE_TAG%   ./billingservice
         """
