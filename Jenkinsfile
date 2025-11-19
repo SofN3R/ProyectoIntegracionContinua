@@ -16,12 +16,12 @@ pipeline {
 
     stage('Gradle Build') {
       steps {
-        bat '''
+        bat """
           cd inventoryservice
-          gradlew.bat clean build -x test
+          call gradlew.bat clean build -x test
           cd ..\\billingservice
-          gradlew.bat clean build -x test
-        '''
+          call gradlew.bat clean build -x test
+        """
       }
       post {
         always {
