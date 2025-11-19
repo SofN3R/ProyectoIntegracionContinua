@@ -4,7 +4,7 @@ pipeline {
   environment {
     JAVA_HOME = "${tool 'jdk21'}"
     PATH      = "${JAVA_HOME}\\bin;${env.PATH}"
-    IMAGE_TAG = "${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
+    IMAGE_TAG = "${env.BRANCH_NAME ?: 'local'}-${env.BUILD_NUMBER ?: '0'}"
   }
 
   options { timestamps(); ansiColor('xterm') }
@@ -45,9 +45,9 @@ pipeline {
           docker compose down || echo ok
           docker compose build
           docker compose up -d
-          powershell -Command "Start-Sleep -Seconds 10"
-          powershell -Command "Invoke-WebRequest -Uri http://localhost:8081/products -UseBasicParsing | Select -ExpandProperty StatusCode"
-          powershell -Command "Invoke-RestMethod -Method Post -Uri http://localhost:8082/invoices -Body '{\\"productId\\":1,\\"quantity\\":1}' -ContentType 'application/json' | ConvertTo-Json -Depth 5"
+          powershell -NoProfile -Command "Start-Sleep -Seconds 10"
+          powershell -NoProfile -Command "Invoke-WebRequest -Uri http://localhost:8081/products -UseBasicParsing | Select -ExpandProperty StatusCode"
+          powershell -NoProfile -Command "Invoke-RestMethod -Method Post -Uri http://localhost:8082/invoices -Body '{\\\"productId\\\":1,\\\"quantity\\\":1}' -ContentType 'application/json' | ConvertTo-Json -Depth 5"
         """
       }
       post {
@@ -58,3 +58,6 @@ pipeline {
 
   post {
     success { echo "OK build #${env.BUILD_NUMBER} — imágenes locales tag=${IMAGE_TAG}" }
+    failure { echo 'Build FAILED' }
+  }
+}
