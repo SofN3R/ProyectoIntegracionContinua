@@ -45,8 +45,7 @@ pipeline {
       steps {
         bat """
           docker compose down || echo ok
-          docker compose build
-          docker compose up -d
+          docker compose up -d --build --force-recreate --remove-orphans
           powershell -NoProfile -Command "Start-Sleep -Seconds 10"
           powershell -NoProfile -Command "Invoke-WebRequest -Uri http://localhost:8081/products -UseBasicParsing | Select -ExpandProperty StatusCode"
           powershell -NoProfile -Command "Invoke-RestMethod -Method Post -Uri http://localhost:8082/invoices -Body '{\\\"productId\\\":1,\\\"quantity\\\":1}' -ContentType 'application/json' | ConvertTo-Json -Depth 5"
