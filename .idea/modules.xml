@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/billingservice.main.iml" filepath="$PROJECT_DIR$/.idea/modules/billingservice.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/inventoryservice.main.iml" filepath="$PROJECT_DIR$/.idea/modules/inventoryservice.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/inventoryservice.test.iml" filepath="$PROJECT_DIR$/.idea/modules/inventoryservice.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/stylehubsoftware.iml" filepath="$PROJECT_DIR$/.idea/stylehubsoftware.iml" />
     </modules>
   </component>
