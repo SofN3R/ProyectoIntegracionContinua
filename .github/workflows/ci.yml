@@ -1,0 +1,57 @@
+name: CI - Build & Test
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java 21 (Temurin) + Gradle cache
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: gradle
+
+      - name: Validate Gradle Wrapper
+        uses: gradle/actions/wrapper-validation@v4
+
+      - name: Build & Test (todos los módulos)
+        run: |
+          ./gradlew --version
+          ./gradlew clean test build
+
+      # Publica los resultados de JUnit en el resumen del job (bonito)
+      - name: Publicar resultados JUnit
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: Unit tests
+          path: |
+            inventoryservice/build/test-results/test/*.xml
+            billingservice/build/test-results/test/*.xml
+          reporter: java-junit
+
+      # Sube artefactos útiles (JARs + reportes)
+      - name: Subir artefactos de build
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: build-artifacts
+          path: |
+            inventoryservice/build/libs/*.jar
+            billingservice/build/libs/*.jar
+            inventoryservice/build/reports/tests/test/**
+            billingservice/build/reports/tests/test/**
